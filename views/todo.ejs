@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            100: '#1E1E2D',
+                            200: '#2D2D3A',
+                            300: '#3D3D4E',
+                            400: '#4E4E62',
+                            500: '#5E5E76',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2D2D3A;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #5E5E76;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4E4E62;
+        }
+        .task-item:hover .task-actions {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-dark-100 min-h-screen text-gray-200 transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        <header class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold text-purple-400 flex items-center">
+                <i data-feather="check-circle" class="mr-2"></i>
+                Todo List
+            </h1>
+            
+        </header>
+
+        <form action="/admin/add-todo" method="post" class="bg-dark-200 rounded-xl shadow-lg p-6 mb-6">
+            <div class="flex gap-3">
+                <input 
+                    type="text" 
+                    id="task-input" 
+                    name="task" 
+                    placeholder="Add a new task..." 
+                    class="flex-1 bg-dark-300 border border-dark-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-200 placeholder-gray-400"
+                    required
+                >
+                <button 
+                    type="submit"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg flex items-center transition-colors"
+                >
+                    <i data-feather="plus" class="mr-2"></i>
+                    Add
+                </button>
+            </div>
+        </form>
+
+        <div class="bg-dark-200 rounded-xl shadow-lg overflow-hidden">
+            <div class="flex border-b border-dark-300">
+                <button 
+                    id="all-tasks" 
+                    class="flex-1 py-3 px-4 text-center font-medium text-purple-400 border-b-2 border-purple-400"
+                >
+                    All Tasks
+                </button>
+                
+                
+            </div>
+
+            <div id="tasks-container" class="max-h-96 overflow-y-auto custom-scrollbar">
+                <!-- Tasks will be added here dynamically -->
+                 <% if (todos.length < 1) { %>
+                    <div class="p-4 text-center text-gray-400" id="empty-state">
+                        <i data-feather="list" class="w-12 h-12 mx-auto mb-2"></i>
+                        <p>No tasks yet. Add one above!</p>
+                    </div>
+                <% } else{ %>
+                    <% for (let i of todos){  %>
+                        <div class="task-item flex items-center p-4 border-b border-dark-300 hover:bg-dark-300 transition-colors group">
+                            <div class="flex items-center flex-1">
+                                <a href="/admin/complete-todo/<%= i.id %>" class="complete-btn w-6 h-6 rounded-full border-2 <% if (i.completed){ %> bg-purple-500 border-purple-500<% }else{ %> border-gray-400 <% } %> flex items-center justify-center mr-3 transition-colors">
+                                    <% if (i.completed){ %> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check w-4 h-4 text-white"><polyline points="20 6 9 17 4 12"></polyline></svg> <% } %>
+                                </a>
+                                <span class="text-gray-200 <% if (i.completed) { %>line-through<% } %> "><%= i.text %></span>
+                            </div>
+                            <div class="task-actions opacity-0 group-hover:opacity-100 transition-opacity flex">
+                                <a href="/admin/delete-todo/<%= i.id %>" class="delete-btn p-1 text-gray-400 hover:text-red-400 transition-colors ml-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 w-4 h-4"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </a>
+                            </div>
+                        </div>
+                    <% } %>
+                        
+                <% } %>
+                        
+
+                        
+                
+            </div>
+
+            <div class="flex justify-between items-center p-4 border-t border-dark-300 text-sm text-gray-400">
+                <span id="items-left"><%= todos.length %> items left</span>
+                <a href="/admin/delete-all" id="clear-completed" class="hover:text-gray-200 transition-colors">
+                    Clear All Todos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
