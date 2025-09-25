@@ -1,8 +1,9 @@
 const Todo = require('../model/todo')
+const {v4: uuidv4} = require('uuid')
 
 exports.addTodo = (req,res)=>{
     if (!req.body.task) return res.redirect('/')
-    const todo = new Todo(Math.floor(Math.random()*100),req.body.task)
+    const todo = new Todo(uuidv4(),req.body.task)
     todo.create(err=>{
         if (!err) return res.redirect('/')
         console.log(err) 
