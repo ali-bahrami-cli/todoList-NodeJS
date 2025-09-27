@@ -1,41 +1,40 @@
 const Todo = require('../model/todo')
 
-exports.addTodo = (req,res)=>{
-    if (!req.body.task) return res.redirect('/')
-    Todo.create({text: req.body.task})
-    .then(result =>{
-        console.log(result);
-        res.redirect('/')
-    }).catch(err => {
-        console.log(err);
-    })
+exports.addTodo = async (req,res)=>{
+    if (!req.body.task) res.redirect('/')
+    try {
+        await Todo.create({text: req.body.task})
+        res.redirect('/')    
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-exports.delTodo = (req,res)=>{
-    Todo.destroy({where: {id : req.params.id}})
-    .then(result => {
-        console.log(result)
-        res.redirect('/')
-    }).catch(err => {
-        console.log(err)
-    })
+exports.delTodo = async (req,res)=>{
+    try {
+        await Todo.destroy({where: {id : req.params.id}})
+        res.redirect('/')    
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-exports.upTodo = (req,res)=>{
-    Todo.findByPk(req.params.id)
-    .then(todo => {
-        todo.completed ? todo.completed = false : todo.completed = true;
-        return todo.save()
-    }).then(() => res.redirect('/'))
-    .catch(err =>{
-        console.log(err);
-    })
+exports.upTodo = async (req,res)=>{
+    try {
+        const todo = await Todo.findByPk(req.params.id)
+        await todo.completed ? todo.completed = false : todo.completed = true;
+        await todo.save()
+        res.redirect('/')
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-exports.delAll = (req,res)=>{
-    Todo.truncate()
-    .then(()=>{
-        console.log('full cleaned')
-        res.redirect('/')
-    }).catch(err => console.log(err))
+exports.delAll = async (req,res)=>{
+    try {
+        await Todo.truncate()
+        res.redirect('/')    
+    } catch (error) {
+        console.log(error)
+    }
 }
