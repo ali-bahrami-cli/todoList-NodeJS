@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 
-const fs = require('fs')
-const path = require('path')
+//? load config
+const dotenv = require('dotenv')
+dotenv.config({path: './config/config.env'})
 
 //? middleWares
 app.use(express.urlencoded({extended: false}))
